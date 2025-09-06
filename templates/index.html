@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="container">
+                <h1><a href="/">AkiSato</a></h1>
+                <ul>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section id="hero" class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <img src="{{ url_for('static', filename='img/profile.jpg') }}" alt="Profile Picture" class="profile-pic">
+                <h2>Hi, I'm Aki</h2>
+                <p>I do art I make art I animate and model too.</p>
+                <a href="#projects" class="btn">View My Work</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2>About Me</h2>
+            <p>the it the it</p>
+            <p>me is me</p>
+        </div>
+    </section>
+
+    <section id="skills" class="skills-section">
+        <div class="container">
+            <h2>Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-item">2D art</div>
+                <div class="skill-item">2D animation (frame by frame & Tweening)</div>
+                <div class="skill-item">3D models</div>
+                <div class="skill-item">3D Stop motion style</div>
+                <div class="skill-item">Basic community management</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="projects-section">
+        <div class="container">
+            <h2>My Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h3>2D</h3>
+                    <p>2D artworks and animations that I've made.</p>
+                    <a href="https://artexamplessssssss.carrd.co" target="_blank" class="btn-small">Examples here</a>
+                </div>
+                <div class="project-card">
+                    <h3>3D</h3>
+                    <p>3D models, rendering and animations that I've made.</p>
+                    <a href="https://3dexampleartssss.carrd.co" target="_blank" class="btn-small">Examples here</a>
+                </div>
+                </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2>Contact Me</h2>
+            <p>Feel free to connect with me on social media!</p>
+            <form action="/contact" method="POST">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn">Send Message</button>
+            </form>
+            <div class="social-links">
+                <a></a> <div class="social-links">
+    <a href="https://www.facebook.com/akiakasato" target="_blank">
+        <img src="{{ url_for('static', filename='img/facebook_icon.jpg') }}" alt="Facebook" class="social-icon">
+    </a>
+    <a href="https://www.tiktok.com/@anni.belle_?" target="_blank">
+        <img src="{{ url_for('static', filename='img/tiktok_icon.jpg') }}" alt="TikTok" class="social-icon">
+    </a>
+    <a href="https://x.com/Sxtx_sat0" target="_blank">
+        <img src="{{ url_for('static', filename='img/twitter_icon.jpg') }}" alt="Twitter (X)" class="social-icon">
+    </a>
+</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Aki Sato. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+...
+
+    <div id="sprite-container">
+        <img id="sprite-image" src="/static/sprites/thegreat2.PNG" alt="Animated character sprite placeholder">
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sprite.js') }}"></script>
+</body>
+</html>
