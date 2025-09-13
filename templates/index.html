@@ -6,7 +6,8 @@
     <title>Portfolio Intro</title>
     <!-- Tailwind CSS for modern, responsive styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Link to the external CSS file -->
+    <!-- This links the HTML to the external CSS file.
+         The href is just the file name because it's in the same folder. -->
     <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body class="bg-gray-100">
@@ -15,6 +16,7 @@
     <div id="introScreen" class="intro-screen">
         <div id="folderButton" class="folder-button">
             <!-- The main folder image -->
+
             <img src="static/img/folder.svg" alt="Portfolio Folder" class="folder-image shadow-lg">
             <div class="folder-name">Portfolio</div>
 
@@ -47,7 +49,7 @@
             <section id="about-me" class="folder-page flex flex-col md:flex-row gap-8">
                 <!-- OC Placeholder on the left -->
                 <div class="flex-shrink-0 w-full md:w-1/2 flex items-center justify-center">
-                    <img src="static/img/placeholder.png" alt="My OC" class="rounded-lg shadow-lg w-full max-w-md h-auto">
+                    <img src="static/img/yummysaladguy.png" alt="Your OC" class="rounded-lg shadow-lg w-full max-w-md h-auto">
                 </div>
                 <!-- About Me Content on the right -->
                 <div class="flex-1 text-gray-800">
@@ -64,16 +66,16 @@
 
             <!-- --- Other Pages (Scrollable) --- -->
             <section id="2d-artworks" class="folder-page note-page flex flex-col items-center justify-center text-center">
-                <img src="static/img/placeholder.png" alt="2D Artworks" class="w-full max-w-sm h-auto mb-6">
+                <img src="static/img/doodles.png" alt="2D Artworks" class="w-full max-w-sm h-auto mb-6">
                 <h2 class="text-3xl font-extrabold text-gray-800 mb-4">My 2D Artworks</h2>
                 <p class="text-gray-600 max-w-xl mx-auto">
                     This is the page for my 2D art.
                 </p>
                 <div class="absolute top-[150px] left-[50px] sticker" data-sticker="1">
-                    <img src="static/img/placeholder.png" alt="Sticker" class="w-full h-full">
+                    <img src="static/img/laughing2.gif" alt="Sticker" class="w-full h-full">
                 </div>
                 <div class="absolute top-[250px] right-[80px] sticker" data-sticker="2">
-                    <img src="static/img/placeholder.png" alt="Sticker" class="w-full h-full">
+                    <img src="static/img/laughing1.gif" alt="Sticker" class="w-full h-full">
                 </div>
             </section>
 
@@ -82,8 +84,11 @@
                 <p class="text-gray-600 max-w-xl mx-auto mb-6">
                     Use your mouse to inspect the model below.
                 </p>
-                <div class="w-full h-96 flex justify-center items-center">
+                <div class="w-full h-96 flex justify-center items-center relative">
                     <canvas id="model-canvas" class="rounded-lg shadow-lg border border-gray-300"></canvas>
+                    <div id="loading-indicator" class="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-75 rounded-lg z-10 text-gray-500 text-lg font-bold">
+                        Loading 3D model...
+                    </div>
                 </div>
             </section>
         </div>
@@ -96,7 +101,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
-    <!-- Link to the external JavaScript file -->
+    <!-- This links the HTML to the external JavaScript file.
+         The src is just the file name because it's in the same folder. -->
     <script src="static/js/script.js"></script>
 </body>
 </html>
