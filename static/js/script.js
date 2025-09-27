@@ -3,12 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const introScreen = document.getElementById('introScreen');
     const mainPage = document.getElementById('mainPage');
     const fadeOverlay = document.getElementById('fadeOverlay');
-    const nextPageBtn = document.getElementById('nextPageBtn');
     const pageTabs = document.querySelectorAll('.page-tab');
     const stickers = document.querySelectorAll('.sticker');
     const scatteredAssets = document.querySelectorAll('.scattered-asset');
 
-    // Function to generate confetti and add it to the page
+    let isTransitioning = false; // Flag for page flipping
+    let modelSceneInitialized = false; // NEW FLAG: Prevents 3D scene from initializing immediately
+
+    // Function to generate confetti (YOUR ORIGINAL CODE)
     const createConfetti = () => {
         const confettiCount = 80;
         const colors = ['#fca5a5', '#fcd34d', '#bef264', '#93c5fd', '#a78bfa', '#f87171'];
@@ -30,16 +32,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Event listener for the intro button click
+    // Event listener for the intro button click (YOUR ORIGINAL CODE)
     folderButton.addEventListener('click', () => {
         folderButton.classList.add('scattered');
 
-        // Fetch the base scatter_folder.svg once
+        // Populate scattered assets and run animation
         fetch("static/img/scatter_folder.svg")
             .then(r => r.text())
             .then(svg => {
                 scatteredAssets.forEach(asset => {
-                    // Randomize position and rotation
                     const randomX = (Math.random() - 0.5) * 500;
                     const randomY = (Math.random() - 0.5) * 500;
                     const randomR = Math.random() * 360;
@@ -48,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     asset.style.setProperty('--r', `${randomR}deg`);
                     asset.style.animationDelay = `${Math.random() * 0.5}s`;
 
-                    // Randomize fill color
                     const color = `hsl(${Math.floor(Math.random() * 360)},70%,50%)`;
                     const colored = svg.replace(/fill="[^"]*"/g, `fill="${color}"`);
                     asset.src = "data:image/svg+xml;base64," + btoa(colored);
@@ -57,58 +57,90 @@ document.addEventListener('DOMContentLoaded', () => {
 
         createConfetti();
 
-        setTimeout(() => {
-            fadeOverlay.classList.add('visible');
-        }, 500);
+        setTimeout(() => { fadeOverlay.classList.add('visible'); }, 500);
 
         setTimeout(() => {
             introScreen.style.display = 'none';
             mainPage.style.display = 'block';
             mainPage.classList.add('active');
             fadeOverlay.classList.remove('visible');
+
+            // REMOVED: setup3DScene() call here. It will run on the first tab click.
         }, 2000);
     });
 
-    // Event listener for the "Next Page" button
-    nextPageBtn.addEventListener('click', () => {
-        const targetId = nextPageBtn.getAttribute('data-target');
-        const targetSection = document.getElementById(targetId);
-        if (targetSection) {
-            targetSection.scrollIntoView({ behavior: 'smooth' });
-        }
-    });
-
-    // Event listener for the page tabs
+    // --- Page Flip Navigation Logic (FIXED) ---
     pageTabs.forEach(tab => {
         tab.addEventListener('click', () => {
+            if (isTransitioning) return;
+            isTransitioning = true;
+
             const targetId = tab.getAttribute('data-target');
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
-                targetSection.scrollIntoView({ behavior: 'smooth' });
+            const targetPage = document.getElementById(targetId);
+            const activePage = document.querySelector('.folder-page.active');
+            const activeTab = document.querySelector('.page-tab.active');
+
+            if (targetPage && !targetPage.classList.contains('active')) {
+                // 1. Deactivate old page (triggers flip-out)
+                if (activePage) {
+                    activePage.classList.remove('active');
+                }
+
+                // 2. Deactivate old tab and activate new tab
+                if (activeTab) {
+                    activeTab.classList.remove('active');
+                }
+                tab.classList.add('active');
+
+                // 3. Set new page to active (triggers flip-in)
+                setTimeout(() => {
+                    targetPage.classList.add('active');
+
+                    // NEW CHECK: Initialize 3D scene if we switch to the 'models' tab for the first time
+                    if (targetId === 'models' && !modelSceneInitialized) {
+                        setup3DScene();
+                        modelSceneInitialized = true;
+                    }
+
+                    // Re-enable clicks after the transition duration (0.8s from CSS)
+                    setTimeout(() => {
+                        isTransitioning = false;
+                    }, 800);
+                }, 100);
+            } else {
+                isTransitioning = false;
             }
         });
     });
 
-    // Event listeners for the interactive stickers
+    // Event listeners for the interactive stickers (YOUR ORIGINAL CODE)
     stickers.forEach(sticker => {
         sticker.addEventListener('click', () => {
             sticker.classList.add('popped');
             setTimeout(() => {
                 sticker.classList.remove('popped');
-            }, 300); // Duration of the pop animation
+            }, 300);
         });
     });
 
-    // --- 3D Model Viewer Logic ---
-    let camera, scene, renderer, cube, model, controls;
+    // --- Content Interaction Logic (From NEW Code) ---
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.document-card')) {
+            const card = e.target.closest('.document-card');
+            const itemName = card.querySelector('strong').textContent.trim();
+            alert(`Opening project details for: ${itemName}`);
+        }
+    });
+
+
+    // --- 3D Model Viewer Logic (Deferred) ---
+    let camera, scene, renderer, cube, model;
     let isDragging = false;
-    let previousMousePosition = {
-        x: 0,
-        y: 0
-    };
+    let previousMousePosition = { x: 0, y: 0 };
 
     function setup3DScene() {
         const canvas = document.getElementById('model-canvas');
+        if (!canvas) return; // Exit if canvas is not found
         const container = canvas.parentElement;
 
         // Scene
@@ -130,54 +162,49 @@ document.addEventListener('DOMContentLoaded', () => {
         directionalLight.position.set(0, 1, 1);
         scene.add(directionalLight);
 
-        // Add a placeholder cube
+        // Placeholder cube (will be removed if model loads)
         const geometry = new THREE.BoxGeometry(1, 1, 1);
         const material = new THREE.MeshStandardMaterial({ color: 0xef4444 });
         cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
 
-        // Load the GLB model from your static folder
+        // Load the GLB model (replace 'your_model.glb' with the actual path to your 3D model)
         loadGLBModel('static/img/your_model.glb');
 
         // Animation loop
         function animate() {
             requestAnimationFrame(animate);
-            if (cube) {
-                cube.rotation.x += 0.005;
-                cube.rotation.y += 0.005;
-            }
             if (model) {
+                // Continuous subtle rotation
                 model.rotation.y += 0.005;
+            } else if (cube) {
+                // Keep the cube rotating until the model is loaded
+                cube.rotation.y += 0.005;
             }
             renderer.render(scene, camera);
         }
 
-        // Mouse Controls
+        // Mouse Controls for manual rotation
         function onMouseDown(e) {
             isDragging = true;
             previousMousePosition.x = e.clientX;
             previousMousePosition.y = e.clientY;
         }
 
-        function onMouseUp(e) {
-            isDragging = false;
-        }
+        function onMouseUp(e) { isDragging = false; }
 
         function onMouseMove(e) {
             if (!isDragging) return;
-
             const deltaX = e.clientX - previousMousePosition.x;
             const deltaY = e.clientY - previousMousePosition.y;
 
             const rotationSpeed = 0.01;
 
-            if (cube) {
-                cube.rotation.y += deltaX * rotationSpeed;
-                cube.rotation.x += deltaY * rotationSpeed;
-            }
             if (model) {
                 model.rotation.y += deltaX * rotationSpeed;
                 model.rotation.x += deltaY * rotationSpeed;
+            } else if (cube) {
+                cube.rotation.y += deltaX * rotationSpeed;
+                cube.rotation.x += deltaY * rotationSpeed;
             }
 
             previousMousePosition.x = e.clientX;
@@ -206,28 +233,25 @@ document.addEventListener('DOMContentLoaded', () => {
         loader.load(
             filePath,
             (gltf) => {
-                console.log('Model loaded successfully:', gltf);
-                if (cube) {
-                    scene.remove(cube); // Remove the placeholder cube
+                // Remove the placeholder cube if it exists
+                if (cube && scene) {
+                    scene.remove(cube);
                 }
                 model = gltf.scene;
                 scene.add(model);
+                console.log('3D Model loaded successfully.');
             },
             (xhr) => {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                // Progress callback
+                console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
             },
             (error) => {
-                console.error('An error happened loading the model:', error);
+                console.error('An error occurred loading the 3D model:', error);
+                // Fallback: Add the placeholder cube if the model fails to load
+                if (scene && cube) {
+                    scene.add(cube);
+                }
             }
         );
-    }
-
-    // Call the setup function when the 3D models page is loaded
-    document.getElementById('3d-models').addEventListener('DOMContentLoaded', setup3DScene);
-
-    // Fallback if DOMContentLoaded is not triggered on section
-    // Check if the 3D models tab is the initial active tab and set up the scene
-    if (window.location.hash.substring(1) === '3d-models') {
-        setup3DScene();
     }
 });
