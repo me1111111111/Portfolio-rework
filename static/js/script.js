@@ -33,15 +33,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener for the intro button click
     folderButton.addEventListener('click', () => {
         folderButton.classList.add('scattered');
-        scatteredAssets.forEach(asset => {
-            const randomX = (Math.random() - 0.5) * 500;
-            const randomY = (Math.random() - 0.5) * 500;
-            const randomR = Math.random() * 360;
-            asset.style.setProperty('--x', `${randomX}px`);
-            asset.style.setProperty('--y', `${randomY}px`);
-            asset.style.setProperty('--r', `${randomR}deg`);
-            asset.style.animationDelay = `${Math.random() * 0.5}s`;
-        });
+
+        // Fetch the base scatter_folder.svg once
+        fetch("static/img/scatter_folder.svg")
+            .then(r => r.text())
+            .then(svg => {
+                scatteredAssets.forEach(asset => {
+                    // Randomize position and rotation
+                    const randomX = (Math.random() - 0.5) * 500;
+                    const randomY = (Math.random() - 0.5) * 500;
+                    const randomR = Math.random() * 360;
+                    asset.style.setProperty('--x', `${randomX}px`);
+                    asset.style.setProperty('--y', `${randomY}px`);
+                    asset.style.setProperty('--r', `${randomR}deg`);
+                    asset.style.animationDelay = `${Math.random() * 0.5}s`;
+
+                    // Randomize fill color
+                    const color = `hsl(${Math.floor(Math.random() * 360)},70%,50%)`;
+                    const colored = svg.replace(/fill="[^"]*"/g, `fill="${color}"`);
+                    asset.src = "data:image/svg+xml;base64," + btoa(colored);
+                });
+            });
+
         createConfetti();
 
         setTimeout(() => {

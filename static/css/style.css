@@ -30,6 +30,10 @@ body {
     transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s ease-in-out;
 }
 
+.scattered-asset {
+  color: hsl(calc(360 * var(--rand)), 70%, 50%);
+}
+
 /* Initial state of the colorful files and confetti - hidden */
 .file, .clip, .confetti {
     opacity: 0;
@@ -147,7 +151,7 @@ body {
 
 /* Note page style for subsequent sections */
 .note-page {
-    background-image: url('static/img/placeholder.png');
+    background-image: url('/static/img/placeholder.png');
     background-size: cover;
     background-position: center;
 }
@@ -204,5 +208,6 @@ body {
     z-index: 50;
 }
 .next-page-btn:hover {
+
     transform: translateY(-5px);
 }
