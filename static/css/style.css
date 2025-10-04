@@ -111,7 +111,8 @@ body {
     border-radius: 0 15px 15px 15px;
     box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
     position: relative;
-    padding-top: 50px;
+    /* FIX 1: Increase padding-top to make space for tabs */
+    padding-top: 80px;
     perspective: 1500px; /* CRITICAL for 3D flip effect */
     transform-style: preserve-3d;
 }
@@ -132,7 +133,8 @@ body {
 /* --- Tab Styles (MODIFIED from new code, keeping horizontal layout) --- */
 .page-tabs {
     position: absolute;
-    top: -20px; /* Pull tabs up */
+    /* FIX 2: Correct top position to pull tabs up */
+    top: -30px;
     left: 140px;
     right: 0;
     display: flex;
@@ -182,7 +184,8 @@ body {
 /* --- Page Flip Transition Styles (YOUR ORIGINAL CODE) --- */
 .folder-page {
     position: absolute;
-    top: 30px; /* Adjusted to sit nicely below the tabs */
+    /* FIX 3: Adjusted top position */
+    top: 15px;
     left: 30px;
     right: 30px;
     bottom: 30px;
@@ -235,7 +238,9 @@ body {
     gap: 20px;
     margin-top: 20px;
 }
-.document-card {
+
+/* Ensure the link card looks like the divs, and include a.document-card for the link */
+.document-card, a.document-card {
     background: #f8f9fa;
     padding: 20px;
     border-radius: 8px;
@@ -243,11 +248,35 @@ body {
     border: 1px solid #e0e0e0;
     transition: all 0.2s ease;
     cursor: pointer;
+    text-decoration: none; /* Remove underline for links */
+    color: #424242; /* Ensure link text is the same color */
 }
-.document-card:hover {
+
+.document-card:hover, a.document-card:hover {
     background: #fff3c4;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* NEW STYLES for Galleries */
+.art-gallery, .model-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.gallery-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    cursor: zoom-in;
+}
+
+.gallery-image:hover {
+    transform: scale(1.02);
 }
 
 /* Model Viewer Container */

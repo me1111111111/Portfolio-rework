@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scatteredAssets = document.querySelectorAll('.scattered-asset');
 
     let isTransitioning = false; // Flag for page flipping
-    let modelSceneInitialized = false; // NEW FLAG: Prevents 3D scene from initializing immediately
+    let modelSceneInitialized = false; // Prevents 3D scene from initializing immediately
 
     // Function to generate confetti (YOUR ORIGINAL CODE)
     const createConfetti = () => {
@@ -64,8 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mainPage.style.display = 'block';
             mainPage.classList.add('active');
             fadeOverlay.classList.remove('visible');
-
-            // REMOVED: setup3DScene() call here. It will run on the first tab click.
         }, 2000);
     });
 
@@ -123,12 +121,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Content Interaction Logic (From NEW Code) ---
+    // --- Content Interaction Logic (FIXED for external link) ---
     document.addEventListener('click', function(e) {
-        if (e.target.closest('.document-card')) {
-            const card = e.target.closest('.document-card');
+        const card = e.target.closest('.document-card');
+
+        // Only run for document cards that are NOT external links (like Doodle Dump)
+        if (card && !card.closest('a[data-external-link]')) {
             const itemName = card.querySelector('strong').textContent.trim();
-            alert(`Opening project details for: ${itemName}`);
+            // Using console.log for a gentle interaction feedback
+            console.log(`Document card clicked: ${itemName}`);
         }
     });
 
